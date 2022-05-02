@@ -28,7 +28,7 @@ export default function App() {
               tabBarIcon: ({ color, size }) => {
                 let iconName;
                 if (route.name === "Timesheets") {
-                  iconName = "ios-home";
+                  iconName = "ios-time";
                 } else if (route.name === "Projects") {
                   iconName = "ios-list";
                 } else if (route.name === "Profile") {
