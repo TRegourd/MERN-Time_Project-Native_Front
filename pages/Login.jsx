@@ -21,26 +21,41 @@ export default function Login() {
 
 function LoginInput({ navigation }) {
   const { logged, setLogged } = useContext(AuthContext);
-  const [username, setUserName] = useState();
+  const [passwordInput, setPasswordInput] = useState();
   const [userInput, setUserInput] = useState();
 
-  const onPressLogin = () => {
+  function onPressLogin(e) {
+    e.preventDefault();
+    console.log(userInput, passwordInput);
     setLogged(true);
-  };
+    // services
+    //   .login(body)
+    //   .then((result) => {
+    //     const { jwt } = result.data;
+    //     localStorage.setItem("jwt", jwt);
+    //     setLogged(true);
+    //     alert("successfully logged");
+    //     navigate("/");
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     alert("incorrect login");
+    //   });
+  }
+
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Login</Text> */}
-
       <Input
         style={styles.input}
         placeholder="Email"
-        //leftIcon={{ type: "font-awesome", name: "chevron-left" }}
         onChangeText={setUserInput}
         value={userInput}
       />
       <Input
         style={styles.input}
         placeholder="Password"
+        onChangeText={setPasswordInput}
+        value={passwordInput}
         secureTextEntry={true}
       />
       <Button
@@ -60,11 +75,22 @@ function LoginInput({ navigation }) {
   );
 }
 
-function SigninInput() {
-  const [username, setUserName] = useState();
-  const [userInput, setUserInput] = useState();
+function SigninInput({ navigation }) {
+  const [userFirstName, setUserFirstName] = useState();
+  const [userLastName, setUserLastName] = useState();
+  const [userEmail, setUserEmail] = useState();
+  const [userPassword, setUserPassword] = useState();
+  const [userConfirmPassword, setUserConfirmPassword] = useState();
+
   const onPressSignin = () => {
-    console.log("signin");
+    const body = {
+      first_name: userFirstName,
+      last_name: userLastName,
+      email: userEmail,
+      password: userPassword,
+      confirmPassword: userConfirmPassword,
+    };
+    console.log(body);
     navigation.navigate("Login Form");
   };
 
@@ -75,33 +101,34 @@ function SigninInput() {
       <Input
         style={styles.input}
         placeholder="First Name"
-        //leftIcon={{ type: "font-awesome", name: "chevron-left" }}
-        onChangeText={setUserInput}
-        value={userInput}
+        onChangeText={setUserFirstName}
+        value={userFirstName}
       />
       <Input
         style={styles.input}
         placeholder="Last Name"
-        //leftIcon={{ type: "font-awesome", name: "chevron-left" }}
-        onChangeText={setUserInput}
-        value={userInput}
+        onChangeText={setUserLastName}
+        value={userLastName}
       />
       <Input
         style={styles.input}
         placeholder="Email"
-        //leftIcon={{ type: "font-awesome", name: "chevron-left" }}
-        onChangeText={setUserInput}
-        value={userInput}
+        onChangeText={setUserEmail}
+        value={userEmail}
       />
       <Input
         style={styles.input}
         placeholder="Password"
         secureTextEntry={true}
+        onChangeText={setUserPassword}
+        value={userPassword}
       />
       <Input
         style={styles.input}
         placeholder="Repeat Password"
         secureTextEntry={true}
+        onChangeText={setUserConfirmPassword}
+        value={userConfirmPassword}
       />
       <Button
         title="Sign In"
