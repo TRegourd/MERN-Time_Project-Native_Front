@@ -20,7 +20,11 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {!logged && <Login />}
+      {!logged && (
+        <NavigationContainer>
+          <Login />
+        </NavigationContainer>
+      )}
       {logged && (
         <NavigationContainer>
           <Tab.Navigator
