@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { AuthContext } from "../AuthProvider";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import services from "../services";
 
 const LoginStack = createNativeStackNavigator();
 
@@ -26,45 +27,49 @@ function LoginInput({ navigation }) {
 
   function onPressLogin(e) {
     e.preventDefault();
-    console.log(userInput, passwordInput);
+    const body = {
+      email: userInput,
+      password: passwordInput,
+    };
     setLogged(true);
-    // services
-    //   .login(body)
-    //   .then((result) => {
-    //     const { jwt } = result.data;
-    //     localStorage.setItem("jwt", jwt);
-    //     setLogged(true);
-    //     alert("successfully logged");
-    //     navigate("/");
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     alert("incorrect login");
-    //   });
+    services
+      .login(body)
+      .then((result) => {
+        const { jwt } = result.data;
+        //localStorage.setItem("jwt", jwt);
+        setLogged(true);
+        alert("Successfully logged");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Incorrect login");
+      });
   }
 
   return (
     <View style={styles.container}>
-      <Input
-        style={styles.input}
-        placeholder="Email"
-        onChangeText={setUserInput}
-        value={userInput}
-      />
-      <Input
-        style={styles.input}
-        placeholder="Password"
-        onChangeText={setPasswordInput}
-        value={passwordInput}
-        secureTextEntry={true}
-      />
-      <Button
-        title="Login"
-        type="solid"
-        icon={{ type: "font-awesome", name: "user", color: "white" }}
-        onPress={onPressLogin}
-      ></Button>
-
+      <Text style={styles.title}>Welcome to The Time Machine</Text>
+      <View style={styles.inputContainer}>
+        <Input
+          style={styles.input}
+          placeholder="Email"
+          onChangeText={setUserInput}
+          value={userInput}
+        />
+        <Input
+          style={styles.input}
+          placeholder="Password"
+          onChangeText={setPasswordInput}
+          value={passwordInput}
+          secureTextEntry={true}
+        />
+        <Button
+          title="Login"
+          type="solid"
+          icon={{ type: "font-awesome", name: "user", color: "white" }}
+          onPress={onPressLogin}
+        ></Button>
+      </View>
       <Button
         title="Don't have account yet ?"
         type="Clear"
@@ -90,7 +95,15 @@ function SigninInput({ navigation }) {
       password: userPassword,
       confirmPassword: userConfirmPassword,
     };
-    console.log(body);
+    services
+      .signin(body)
+      .then(() => {
+        alert("User successfully created");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Incorrect entry");
+      });
     navigation.navigate("Login Form");
   };
 
@@ -143,13 +156,17 @@ function SigninInput({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     padding: 50,
   },
   title: {
     fontSize: 20,
     marginBottom: 10,
+    color: "grey",
+  },
+  inputContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   input: {
     flex: 1,
