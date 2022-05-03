@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "../AuthProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SettingsStack = createNativeStackNavigator();
 
@@ -22,7 +23,8 @@ export default function Profile() {
 function ViewProfile({ navigation }) {
   const { logged, setLogged } = useContext(AuthContext);
 
-  const onPressLogout = () => {
+  const onPressLogout = async () => {
+    await AsyncStorage.removeItem("@jwt");
     setLogged(!logged);
   };
 
