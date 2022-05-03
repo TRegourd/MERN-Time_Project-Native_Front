@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet, View, Text, ToastAndroid } from "react-native";
+import { StyleSheet, View, Text, ToastAndroid, ScrollView } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Button, Input } from "@rneui/base";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -17,7 +17,7 @@ export default function Timesheets() {
         component={RegisterTimesheet}
         options={{ headerShown: false }}
       />
-      <TimeSheetStack.Screen name="ListeTimeSheet" component={ListeTimeSheet} />
+      <TimeSheetStack.Screen name="ListTimesheet" component={ListTimesheet} />
     </TimeSheetStack.Navigator>
   );
 }
@@ -134,13 +134,27 @@ function RegisterTimesheet({ navigation }) {
             />
           ))}
         </Picker>
-        <Button style={styles.button} title="Save" onPress={saveTime}></Button>
+        {description && duration ? (
+          <Button
+            style={styles.button}
+            title="Save"
+            onPress={saveTime}
+          ></Button>
+        ) : (
+          <Button
+            style={styles.button}
+            title="Save"
+            onPress={saveTime}
+            disabled
+          ></Button>
+        )}
+
         <Text style={{ textAlign: "center", margin: 5 }}></Text>
         <Button
           style={styles.button}
           title="  Show history"
-          type="outline"
-          onPress={() => navigation.navigate("ListeTimeSheet")}
+          type="Clear"
+          onPress={() => navigation.navigate("ListTimesheet")}
           icon={<FontAwesome5 name="business-time" size={18} color="grey" />}
         ></Button>
       </View>
@@ -148,8 +162,48 @@ function RegisterTimesheet({ navigation }) {
   );
 }
 
-function ListeTimeSheet({ navigation }) {
-  return <Text>Coucou</Text>;
+function ListTimesheet({ navigation }) {
+  const [listTimeSheet, setListTimeSheet] = useState([
+    { project: { color: {} }, user: {} },
+  ]);
+
+  const { token } = useContext(AuthContext);
+
+  async function fetchAndSetTimesheet() {
+    await services
+      .getAllTimesheetList(token)
+      .then((res) => {
+        setListTimeSheet(res);
+      })
+      .catch(() => alert("Impossible to charge list of timesheets"));
+  }
+
+  useEffect(() => {
+    fetchAndSetTimesheet();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <Text>Timesheet</Text>
+
+      <ScrollView>
+        {listTimeSheet.map((timesheet) => {
+          return (
+            <View
+              style={{
+                height: 20,
+                width: 20,
+                margin: 5,
+                borderRadius: 10,
+              }}
+            >
+              <Text>{timesheet.desc}</Text>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

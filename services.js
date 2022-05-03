@@ -38,6 +38,12 @@ const services = {
       })
       .then((res) => res.data);
   },
+
+  getAllTimesheetList(token) {
+    return base
+      .get(`/timesheet/all`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.data);
+  },
 };
 
 export default services;
