@@ -30,7 +30,6 @@ const services = {
 
   createProject({ body, token }) {
     console.log(body);
-    console.log(token);
     return base.post(`/projects/`, body, {
       headers: { Authorization: `Bearer ${token}` },
     });

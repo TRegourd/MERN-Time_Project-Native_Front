@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { AuthContext } from "../AuthProvider";
 import services from "../services";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useIsFocused } from "@react-navigation/native";
 const ProjectStack = createNativeStackNavigator();
 
 export default function Projects() {
@@ -25,6 +26,7 @@ export default function Projects() {
 function ProjectsDisplay({ navigation }) {
   const [projectsList, setprojectsList] = useState([]);
   const { token } = useContext(AuthContext);
+  const isFocused = useIsFocused();
 
   function fetchAndSetProjects() {
     services
@@ -37,7 +39,7 @@ function ProjectsDisplay({ navigation }) {
 
   useEffect(() => {
     fetchAndSetProjects();
-  }, [projectsList]);
+  }, [isFocused]);
 
   return (
     <View style={styles.container}>
