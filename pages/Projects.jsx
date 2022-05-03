@@ -5,6 +5,9 @@ import { AuthContext } from "../AuthProvider";
 import services from "../services";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useIsFocused } from "@react-navigation/native";
+
+import { ColorPicker } from "react-native-color-picker";
+
 const ProjectStack = createNativeStackNavigator();
 
 export default function Projects() {
@@ -68,11 +71,15 @@ function ProjectsDisplay({ navigation }) {
 function ProjectsAdd({ navigation }) {
   const { token, currentUser } = useContext(AuthContext);
   const [projectName, setProjectName] = useState();
+  const [selectedColor, setSelectedColor] = useState("#ff0000");
 
   const onPressAddProject = () => {
     const body = {
       name: projectName,
       user: currentUser._id,
+      r: hexToRgb(selectedColor).r,
+      g: hexToRgb(selectedColor).g,
+      b: hexToRgb(selectedColor).b,
     };
 
     services
@@ -87,6 +94,17 @@ function ProjectsAdd({ navigation }) {
     navigation.navigate("My Projects");
   };
 
+  function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
+  }
+
   return (
     <View style={styles.container}>
       <Input
@@ -95,11 +113,16 @@ function ProjectsAdd({ navigation }) {
         onChangeText={setProjectName}
         value={projectName}
       />
+      <ColorPicker
+        onColorSelected={(color) => setSelectedColor(color)}
+        style={styles.colorPicker}
+      />
       <Button
         title="Add New Project"
         type="solid"
         icon={{ type: "materialIcons", name: "playlist-add", color: "white" }}
         onPress={onPressAddProject}
+        style={styles.button}
       ></Button>
     </View>
   );
@@ -108,12 +131,20 @@ function ProjectsAdd({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+
     justifyContent: "center",
     padding: 50,
   },
   input: {
     flex: 1,
     textAlign: "center",
+  },
+  colorPicker: {
+    flex: 0.5,
+    paddingLeft: 50,
+    paddingRight: 50,
+  },
+  button: {
+    marginTop: 5,
   },
 });
