@@ -78,7 +78,7 @@ function RegisterTimesheet({ navigation }) {
     services
       .createNewTimesheet(token, time)
       .then(() => {
-        ToastAndroid.show("Time saved", ToastAndroid.SHORT);
+        alert("Time saved");
         const dateReinitialised = new Date();
         setDate(dateReinitialised);
         setDescription("");
@@ -134,6 +134,8 @@ function RegisterTimesheet({ navigation }) {
             />
           ))}
         </Picker>
+      </View>
+      <View style={styles.buttonContainer}>
         {description && duration ? (
           <Button
             style={styles.button}
@@ -149,7 +151,6 @@ function RegisterTimesheet({ navigation }) {
           ></Button>
         )}
 
-        <Text style={{ textAlign: "center", margin: 5 }}></Text>
         <Button
           style={styles.button}
           title="  Show history"
@@ -209,20 +210,23 @@ function ListTimesheet({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "space-between",
+    padding: 10,
   },
   button: {
-    marginTop: 10,
-    flex: 0.25,
+    flex: 1,
   },
   inputContainer: {
     flex: 1,
-    width: 250,
     justifyContent: "center",
   },
   input: {
     padding: 2,
     textAlign: "center",
+  },
+
+  buttonContainer: {
+    flex: 0.25,
+    flexDirection: "row",
+    justifyContent: "center",
   },
 });

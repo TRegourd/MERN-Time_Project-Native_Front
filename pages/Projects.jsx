@@ -31,7 +31,7 @@ function ProjectsDisplay({ navigation }) {
   const { token, currentUser } = useContext(AuthContext);
   const isFocused = useIsFocused();
   const [nameProject, setNameProject] = useState();
-  const isNameChange = nameProject;
+  const [isNameChange, setIsNameChange] = useState(false);
 
   function fetchAndSetProjects() {
     services
@@ -53,21 +53,13 @@ function ProjectsDisplay({ navigation }) {
   }
 
   function onPressEditName(project) {
-    console.log(project);
-    console.log(nameProject);
     services
       .updateProjectName(project._id, nameProject)
       .then(() => {
         fetchAndSetProjects();
       })
       .catch(() => alert("Impossible de charger la liste des projets"));
-    // services
-    //   .deleteProject(project._id)
-    //   .then(() => {
-    //     fetchAndSetProjects();
-    //     alert("Project Deleted");
-    //   })
-    //   .catch((e) => console.log(e));
+    setIsNameChange(false);
   }
 
   // useEffect(() => {
@@ -108,20 +100,25 @@ function ProjectsDisplay({ navigation }) {
                   style={styles.project}
                   defaultValue={project.name}
                   placeholder={project.name}
-                  onChangeText={setNameProject}
+                  onChangeText={(text) => {
+                    setNameProject(text);
+                    setIsNameChange(true);
+                  }}
                 ></TextInput>
-                <Button
-                  type="Clear"
-                  onPress={() => {
-                    onPressEditName(project);
-                  }}
-                  icon={{
-                    type: "materialIcons",
-                    name: "edit",
-                    color: "grey",
-                  }}
-                  style={styles.editAndDeleteButton}
-                ></Button>
+                {isNameChange && (
+                  <Button
+                    type="Clear"
+                    onPress={() => {
+                      onPressEditName(project);
+                    }}
+                    icon={{
+                      type: "materialIcons",
+                      name: "edit",
+                      color: "grey",
+                    }}
+                    style={styles.editAndDeleteButton}
+                  ></Button>
+                )}
                 <Button
                   type="Clear"
                   onPress={() => {
