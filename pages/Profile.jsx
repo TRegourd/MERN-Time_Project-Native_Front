@@ -41,7 +41,7 @@ function ViewProfile({ navigation }) {
       <Button
         style={styles.logoutButton}
         title="Logout"
-        type="outline"
+        type="Clear"
         icon={{ type: "font-awesome", name: "user-times", color: "grey" }}
         onPress={onPressLogout}
       ></Button>
