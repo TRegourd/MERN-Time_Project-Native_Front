@@ -1,8 +1,5 @@
 import axios from "axios";
-import { useContext, useState } from "react";
 import env from "./env";
-import tokenAsyncStorage from "./lib/tokenAsyncStorage";
-import { AuthContext } from "./AuthProvider";
 
 const baseURL = env.REACT_APP_API_URL;
 
@@ -30,6 +27,16 @@ const services = {
       })
       .then((res) => res.data);
   },
+
+  createProject({ body, token }) {
+    console.log(body);
+    console.log(token);
+    return base.post(`/projects/`, body, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  },
+
+  /** Users */
 };
 
 export default services;
