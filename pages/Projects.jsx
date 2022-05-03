@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { AuthContext } from "../AuthProvider";
 import services from "../services";
 
@@ -11,7 +11,6 @@ export default function Projects() {
     services
       .getProjectsList(token)
       .then((res) => {
-        console.log("project list", res);
         setprojectsList(res);
       })
       .catch(() => alert("Impossible de charger la liste des projets"));
@@ -24,7 +23,17 @@ export default function Projects() {
   return (
     <View>
       <Text>Projects</Text>
-      <View></View>
+      <View>
+        <ScrollView>
+          {projectsList.map((project) => {
+            return (
+              <View key={project._id}>
+                <Text>{project.name}</Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
     </View>
   );
 }

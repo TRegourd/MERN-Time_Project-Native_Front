@@ -6,8 +6,6 @@ import { AuthContext } from "./AuthProvider";
 
 const baseURL = env.REACT_APP_API_URL;
 
-console.log(baseURL);
-
 const base = axios.create({ baseURL });
 
 const services = {
@@ -24,7 +22,6 @@ const services = {
   /** Projects */
 
   getProjectsList(token) {
-    console.log("token", token);
     return base
       .get(`/projects`, {
         headers: {
