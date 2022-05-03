@@ -28,6 +28,7 @@ const services = {
       .then((res) => res.data);
   },
 
+
   createProject({ body, token }) {
     console.log(body);
     return base.post(`/projects/`, body, {
@@ -45,7 +46,22 @@ const services = {
       .then((res) => res.data);
   },
 
-  /** Users */
+  /** Times */
+
+  createNewTimesheet(token, body) {
+    return base
+      .post(`timesheet/newtimesheet`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => res.data);
+  },
+
+  getAllTimesheetList(token) {
+    return base
+      .get(`/timesheet/all`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.data);
+  },
+
 };
 
 export default services;
