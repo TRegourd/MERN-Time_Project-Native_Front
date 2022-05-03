@@ -35,6 +35,10 @@ const services = {
     });
   },
 
+  deleteProject(projectId) {
+    return base.delete(`/projects/id/${projectId}`).then((res) => res.data);
+  },
+
   /** Users */
 };
 

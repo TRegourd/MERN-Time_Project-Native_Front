@@ -40,8 +40,14 @@ function ProjectsDisplay({ navigation }) {
       .catch(() => alert("Impossible de charger la liste des projets"));
   }
 
-  function onPressDeleteProject() {
-    console.log("toto");
+  function onPressDeleteProject(project) {
+    services
+      .deleteProject(project._id)
+      .then(() => {
+        fetchAndSetProjects();
+        alert("Project Deleted");
+      })
+      .catch((e) => console.log(e));
   }
 
   useEffect(() => {
@@ -77,7 +83,9 @@ function ProjectsDisplay({ navigation }) {
                 <TextInput style={styles.project}>{project.name}</TextInput>
                 <Button
                   type="Clear"
-                  onPress={onPressDeleteProject}
+                  onPress={() => {
+                    onPressDeleteProject(project);
+                  }}
                   icon={{
                     type: "materialIcons",
                     name: "delete-forever",
@@ -162,7 +170,6 @@ function ProjectsAdd({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     justifyContent: "center",
     padding: 50,
   },
@@ -190,7 +197,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 5,
     borderColor: "grey",
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderRadius: 10,
     marginBottom: 2,
   },
@@ -198,7 +205,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   button: {
-    flex: 1,
     marginTop: 5,
   },
 });
