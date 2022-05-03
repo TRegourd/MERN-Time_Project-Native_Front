@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Input } from "@rneui/base";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { AuthContext } from "../AuthProvider";
 import services from "../services";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -28,7 +28,7 @@ export default function Projects() {
 
 function ProjectsDisplay({ navigation }) {
   const [projectsList, setprojectsList] = useState([]);
-  const { token } = useContext(AuthContext);
+  const { token, currentUser } = useContext(AuthContext);
   const isFocused = useIsFocused();
 
   function fetchAndSetProjects() {
@@ -40,19 +40,50 @@ function ProjectsDisplay({ navigation }) {
       .catch(() => alert("Impossible de charger la liste des projets"));
   }
 
+  function onPressDeleteProject() {
+    console.log("toto");
+  }
+
   useEffect(() => {
     fetchAndSetProjects();
   }, [isFocused]);
 
   return (
     <View style={styles.container}>
-      <Text>Projects</Text>
-      <View>
+      <Text style={styles.title}>
+        Projects of {currentUser.first_name} {currentUser.last_name}
+      </Text>
+      <View style={styles.scrollViewContainer}>
         <ScrollView>
           {projectsList.map((project) => {
             return (
-              <View key={project._id}>
-                <Text>{project.name}</Text>
+              <View key={project._id} style={styles.projectContainer}>
+                <View
+                  style={{
+                    height: 20,
+                    width: 20,
+                    marginRight: 5,
+                    borderRadius: 10,
+                    backgroundColor:
+                      "rgb(" +
+                      project.color.r +
+                      "," +
+                      project.color.g +
+                      "," +
+                      project.color.b +
+                      ")",
+                  }}
+                ></View>
+                <TextInput style={styles.project}>{project.name}</TextInput>
+                <Button
+                  type="Clear"
+                  onPress={onPressDeleteProject}
+                  icon={{
+                    type: "materialIcons",
+                    name: "delete-forever",
+                    color: "grey",
+                  }}
+                ></Button>
               </View>
             );
           })}
@@ -71,7 +102,7 @@ function ProjectsDisplay({ navigation }) {
 function ProjectsAdd({ navigation }) {
   const { token, currentUser } = useContext(AuthContext);
   const [projectName, setProjectName] = useState();
-  const [selectedColor, setSelectedColor] = useState("#ff0000");
+  const [selectedColor, setSelectedColor] = useState("#FFFAFA");
 
   const onPressAddProject = () => {
     const body = {
@@ -135,6 +166,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 50,
   },
+  title: {
+    flex: 1,
+    fontSize: 20,
+    alignSelf: "center",
+  },
   input: {
     flex: 1,
     textAlign: "center",
@@ -144,7 +180,25 @@ const styles = StyleSheet.create({
     paddingLeft: 50,
     paddingRight: 50,
   },
+  scrollViewContainer: {
+    flex: 4,
+  },
+  projectContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    borderColor: "grey",
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 2,
+  },
+  project: {
+    flex: 1,
+  },
   button: {
+    flex: 1,
     marginTop: 5,
   },
 });
