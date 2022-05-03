@@ -4,6 +4,8 @@ import { View, Text, StyleSheet } from "react-native";
 import { AuthContext } from "../AuthProvider";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import services from "../services";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import tokenAsyncStorage from "../lib/tokenAsyncStorage";
 
 const LoginStack = createNativeStackNavigator();
 
@@ -31,13 +33,13 @@ function LoginInput({ navigation }) {
       email: userInput,
       password: passwordInput,
     };
-    setLogged(true);
     services
       .login(body)
       .then((result) => {
         const { jwt } = result.data;
-        //localStorage.setItem("jwt", jwt);
+        tokenAsyncStorage.storeJwt(jwt);
         setLogged(true);
+        tokenAsyncStorage.getJwt();
         alert("Successfully logged");
       })
       .catch((err) => {
