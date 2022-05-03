@@ -21,7 +21,7 @@ export default function Profile() {
 }
 
 function ViewProfile({ navigation }) {
-  const { logged, setLogged } = useContext(AuthContext);
+  const { logged, setLogged, currentUser } = useContext(AuthContext);
 
   const onPressLogout = async () => {
     await AsyncStorage.removeItem("@jwt");
@@ -30,7 +30,9 @@ function ViewProfile({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text>My Profile</Text>
+      <Text>
+        Profile of {currentUser.first_name} {currentUser.last_name}
+      </Text>
       <Button
         title="Edit Profile"
         onPress={() => navigation.navigate("Edit")}

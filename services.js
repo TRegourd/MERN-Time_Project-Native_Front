@@ -1,8 +1,5 @@
 import axios from "axios";
-import { useContext, useState } from "react";
 import env from "./env";
-import tokenAsyncStorage from "./lib/tokenAsyncStorage";
-import { AuthContext } from "./AuthProvider";
 
 const baseURL = env.REACT_APP_API_URL;
 
@@ -31,6 +28,26 @@ const services = {
       .then((res) => res.data);
   },
 
+
+  createProject({ body, token }) {
+    console.log(body);
+    return base.post(`/projects/`, body, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  },
+
+  deleteProject(projectId) {
+    return base.delete(`/projects/id/${projectId}`).then((res) => res.data);
+  },
+
+  updateProjectName(projectId, name) {
+    return base
+      .put(`/projects/id/name/${projectId}`, { name })
+      .then((res) => res.data);
+  },
+
+  /** Times */
+
   createNewTimesheet(token, body) {
     return base
       .post(`timesheet/newtimesheet`, body, {
@@ -44,6 +61,7 @@ const services = {
       .get(`/timesheet/all`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => res.data);
   },
+
 };
 
 export default services;
