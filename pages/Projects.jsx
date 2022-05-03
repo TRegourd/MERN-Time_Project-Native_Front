@@ -30,6 +30,8 @@ function ProjectsDisplay({ navigation }) {
   const [projectsList, setprojectsList] = useState([]);
   const { token, currentUser } = useContext(AuthContext);
   const isFocused = useIsFocused();
+  const [nameProject, setNameProject] = useState();
+  const isNameChange = nameProject;
 
   function fetchAndSetProjects() {
     services
@@ -49,6 +51,28 @@ function ProjectsDisplay({ navigation }) {
       })
       .catch((e) => console.log(e));
   }
+
+  function onPressEditName(project) {
+    console.log(project);
+    console.log(nameProject);
+    services
+      .updateProjectName(project._id, nameProject)
+      .then(() => {
+        fetchAndSetProjects();
+      })
+      .catch(() => alert("Impossible de charger la liste des projets"));
+    // services
+    //   .deleteProject(project._id)
+    //   .then(() => {
+    //     fetchAndSetProjects();
+    //     alert("Project Deleted");
+    //   })
+    //   .catch((e) => console.log(e));
+  }
+
+  // useEffect(() => {
+  //   console.log(nameProject);
+  // }, [nameProject]);
 
   useEffect(() => {
     fetchAndSetProjects();
@@ -80,7 +104,24 @@ function ProjectsDisplay({ navigation }) {
                       ")",
                   }}
                 ></View>
-                <TextInput style={styles.project}>{project.name}</TextInput>
+                <TextInput
+                  style={styles.project}
+                  defaultValue={project.name}
+                  placeholder={project.name}
+                  onChangeText={setNameProject}
+                ></TextInput>
+                <Button
+                  type="Clear"
+                  onPress={() => {
+                    onPressEditName(project);
+                  }}
+                  icon={{
+                    type: "materialIcons",
+                    name: "edit",
+                    color: "grey",
+                  }}
+                  style={styles.editAndDeleteButton}
+                ></Button>
                 <Button
                   type="Clear"
                   onPress={() => {
@@ -91,6 +132,7 @@ function ProjectsDisplay({ navigation }) {
                     name: "delete-forever",
                     color: "grey",
                   }}
+                  style={styles.editAndDeleteButton}
                 ></Button>
               </View>
             );
@@ -178,6 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     alignSelf: "center",
   },
+
   input: {
     flex: 1,
     textAlign: "center",
@@ -202,8 +245,9 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   project: {
-    flex: 1,
+    flex: 3,
   },
+  editAndDeleteButton: {},
   button: {
     marginTop: 5,
   },

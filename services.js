@@ -39,6 +39,12 @@ const services = {
     return base.delete(`/projects/id/${projectId}`).then((res) => res.data);
   },
 
+  updateProjectName(projectId, name) {
+    return base
+      .put(`/projects/id/name/${projectId}`, { name })
+      .then((res) => res.data);
+  },
+
   /** Users */
 };
 
