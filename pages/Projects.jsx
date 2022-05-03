@@ -37,7 +37,7 @@ function ProjectsDisplay({ navigation }) {
 
   useEffect(() => {
     fetchAndSetProjects();
-  }, []);
+  }, [projectsList]);
 
   return (
     <View style={styles.container}>
