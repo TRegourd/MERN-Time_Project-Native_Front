@@ -9,6 +9,7 @@ import { Picker } from "@react-native-picker/picker";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AuthContext } from "../AuthProvider";
 import services from "../services";
+import ProjectPicker from "./ProjectPicker";
 // #endregion IMPORT
 
 const TimeSheetStack = createNativeStackNavigator();
@@ -38,7 +39,8 @@ function RegisterTimesheet({ navigation }) {
   const [description, setDescription] = useState();
   const [duration, setDuration] = useState(0);
 
-  const [projectSelect, setProjectSelect] = useState("");
+  // RECUPERATION DES DONNEES DE CONTEXT
+  const { token, currentUser } = useContext(AuthContext);
 
   // DATE PICKER
   const onChange = (event, selectedDate) => {
@@ -55,23 +57,6 @@ function RegisterTimesheet({ navigation }) {
   const showDatepicker = () => {
     showMode("date");
   };
-
-  // RECUPERATION DE LA LISTE DE PROJET
-  const [projectsList, setprojectsList] = useState([]);
-  const { token, currentUser } = useContext(AuthContext);
-
-  function fetchAndSetProjects() {
-    services
-      .getProjectsList(token)
-      .then((res) => {
-        setprojectsList(res);
-      })
-      .catch(() => alert("Impossible de charger la liste des projets"));
-  }
-
-  useEffect(() => {
-    fetchAndSetProjects();
-  }, [projectsList]);
 
   // ENREGISTREMENT DU TEMPS SAISIE
   function saveTime(e) {
@@ -114,7 +99,7 @@ function RegisterTimesheet({ navigation }) {
               testID="datePicker"
               value={date}
               mode={mode}
-              is24Hour={true}
+              display="calendar"
               onChange={onChange}
             />
           )}
@@ -136,7 +121,7 @@ function RegisterTimesheet({ navigation }) {
             alignContent: "space-around",
           }}
         >
-          <View style={{ flex: 4, justifyContent: "center" }}>
+          <View style={{ flex: 4, justifyContent: "center", marginTop: 20 }}>
             <Input
               style={styles.inputTemps}
               onChangeText={setDuration}
@@ -171,20 +156,8 @@ function RegisterTimesheet({ navigation }) {
           />
         </View>
 
-        <Picker
-          selectedValue={projectSelect}
-          mode={"dialog"}
-          onValueChange={(itemValue, itemIndex) => setProjectSelect(itemValue)}
-        >
-          {projectsList.map((item) => (
-            <Picker.Item
-              style={{ textAlign: "center" }}
-              key={item._id}
-              label={item.name}
-              value={item._id}
-            />
-          ))}
-        </Picker>
+        {/* affiche la liste des projets */}
+        <ProjectPicker />
       </View>
       <View style={styles.buttonContainer}>
         {description && duration ? (
