@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome5, Entypo } from "@expo/vector-icons";
 import services from "../services";
 import { useIsFocused } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 
 const SettingsStack = createNativeStackNavigator();
 
@@ -43,16 +44,18 @@ function ViewProfile({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("Edit")}>
-          <Avatar
-            size={150}
-            rounded
-            icon={{ name: "adb", type: "material" }}
-            containerStyle={{ backgroundColor: "orange" }}
-          >
-            <Avatar.Accessory size={60} />
-          </Avatar>
-        </TouchableOpacity>
+        <Avatar
+          size={150}
+          rounded
+          icon={{ name: "adb", type: "material" }}
+          containerStyle={{ backgroundColor: "orange" }}
+        >
+          <Avatar.Accessory
+            size={60}
+            onPress={() => navigation.navigate("Edit")}
+          />
+        </Avatar>
+
         <Text style={styles.title}>
           {currentUser.first_name} {currentUser.last_name}
         </Text>
@@ -107,6 +110,7 @@ function EditProfile({ navigation }) {
   const [editLastName, setEditLastName] = useState(currentUser.last_name);
   const [editAdress, setEditAdress] = useState(currentUser.adress);
   const [editPosition, setEditPosition] = useState(currentUser.position);
+  const [image, setImage] = useState(null);
 
   function onPressEditProfile() {
     const body = {
@@ -127,19 +131,68 @@ function EditProfile({ navigation }) {
     navigation.navigate("Profile Overview");
   }
 
+  async function onPressEditPicutre() {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
+    })();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity>
+        {!image && (
           <Avatar
             size={150}
             rounded
             icon={{ name: "adb", type: "material" }}
             containerStyle={{ backgroundColor: "orange" }}
           >
-            <Avatar.Accessory size={30} />
+            <Avatar.Accessory
+              type={"font-awesome-5"}
+              name={"camera"}
+              style={{ height: 40, width: 40, borderRadius: 20 }}
+              size={30}
+              onPress={onPressEditPicutre}
+            />
           </Avatar>
-        </TouchableOpacity>
+        )}
+        {image && (
+          <Avatar
+            size={150}
+            rounded
+            source={{ uri: image }}
+            containerStyle={{ backgroundColor: "orange" }}
+          >
+            <Avatar.Accessory
+              type={"font-awesome-5"}
+              name={"camera"}
+              style={{ height: 40, width: 40, borderRadius: 20 }}
+              size={30}
+              onPress={onPressEditPicutre}
+            />
+          </Avatar>
+        )}
       </View>
       <View style={styles.inputContainer}>
         <ScrollView>
