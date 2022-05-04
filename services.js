@@ -68,14 +68,23 @@ const services = {
       .get(`/timesheet/all`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => res.data);
   },
+  
+  deleteTimesheetById(token, id) {
+    return base
+      .delete(`/timesheet/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => res.data);
+  },
 
   /** Users */
 
   updateCurrentUser(body, token) {
     return base
-      .put(`/users`, body, { headers: { Authorization: `Bearer ${token}` } })
-      .then((res) => res.data);
+      .put(`/users`, body, { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.data);
   },
+
+  
 };
 
 export default services;
