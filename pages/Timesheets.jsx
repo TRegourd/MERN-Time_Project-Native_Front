@@ -71,7 +71,7 @@ function RegisterTimesheet({ navigation }) {
 
   useEffect(() => {
     fetchAndSetProjects();
-  }, [projectsList]);
+  }, []);
 
   // ENREGISTREMENT DU TEMPS SAISIE
   function saveTime(e) {
@@ -101,14 +101,13 @@ function RegisterTimesheet({ navigation }) {
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <View
-          style={
-            {
-              // height: 60,
-              // flexDirection: "row",
-              // alignItems: "center",
-              // justifyContent: "center",
-            }
-          }
+          style={{
+            height: 60,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 10,
+          }}
         >
           {show && (
             <DateTimePicker
@@ -119,11 +118,13 @@ function RegisterTimesheet({ navigation }) {
               onChange={onChange}
             />
           )}
-          <Button
-            onPress={showDatepicker}
-            title={dayjs(date).format("DD-MM-YY")}
-            type="outline"
-          />
+          {!show && (
+            <Button
+              onPress={showDatepicker}
+              title={dayjs(date).format("DD-MM-YY")}
+              type="outline"
+            />
+          )}
         </View>
 
         <View
@@ -269,11 +270,6 @@ function ListTimesheet({ navigation }) {
                         {dayjs(time.date).format("DD-MM-YY")}
                       </Text>
                     </View>
-                    <View style={{ flex: 3 }}>
-                      <Text style={{ textAlign: "center", fontWeight: "bold" }}>
-                        {time.project.name}
-                      </Text>
-                    </View>
                     <View style={{ flex: 1 }}>
                       <Text style={{ textAlign: "right", fontWeight: "bold" }}>
                         {(time.duration - (time.duration % 60)) / 60} h{" "}
@@ -285,10 +281,23 @@ function ListTimesheet({ navigation }) {
                   <View
                     style={{
                       flex: 1,
-                      alignItems: "center",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <Text style={{ textAlign: "center" }}>{time.desc}</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontWeight: "bold" }}>
+                        {time.project.name}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        flex: 1,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={{ textAlign: "left" }}>{time.desc}</Text>
+                    </View>
                   </View>
                 </View>
                 <View
