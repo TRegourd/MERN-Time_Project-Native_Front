@@ -30,7 +30,7 @@ export default function AuthProvider({ children }) {
       .then((res) => setCurrentUser(res.data));
   };
 
-  const value = { logged, setLogged, token, currentUser };
+  const value = { logged, setLogged, token, currentUser, setCurrentUser };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -30,7 +30,6 @@ const services = {
   },
 
   createProject({ body, token }) {
-    console.log(body);
     return base.post(`/projects/`, body, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -67,6 +66,14 @@ const services = {
   getAllTimesheetList(token) {
     return base
       .get(`/timesheet/all`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.data);
+  },
+
+  /** Users */
+
+  updateCurrentUser(body, token) {
+    return base
+      .put(`/users`, body, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => res.data);
   },
 };

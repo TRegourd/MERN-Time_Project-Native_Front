@@ -1,10 +1,18 @@
-import { Avatar, Button } from "@rneui/base";
-import React, { useContext } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Avatar, Button, Input } from "@rneui/base";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "../AuthProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome5, Entypo } from "@expo/vector-icons";
+import services from "../services";
+import { useIsFocused } from "@react-navigation/native";
 
 const SettingsStack = createNativeStackNavigator();
 
@@ -23,6 +31,8 @@ export default function Profile() {
 
 function ViewProfile({ navigation }) {
   const { logged, setLogged, currentUser } = useContext(AuthContext);
+  const [userData, setUserData] = useState(currentUser);
+  const isFocused = useIsFocused();
 
   const onPressLogout = async () => {
     await AsyncStorage.removeItem("@jwt");
@@ -89,10 +99,79 @@ function ViewProfile({ navigation }) {
   );
 }
 
-function EditProfile() {
+function EditProfile({ navigation }) {
+  const { currentUser, token, setCurrentUser } = useContext(AuthContext);
+
+  const [editFirstName, setEditFirstName] = useState(currentUser.first_name);
+  const [editLastName, setEditLastName] = useState(currentUser.last_name);
+  const [editAdress, setEditAdress] = useState(currentUser.adress);
+  const [editPosition, setEditPosition] = useState(currentUser.position);
+
+  function onPressEditProfile() {
+    const body = {
+      first_name: editFirstName,
+      last_name: editLastName,
+      position: editPosition,
+      adress: editAdress,
+      email: currentUser.email,
+    };
+
+    services
+      .updateCurrentUser(body, token)
+      .then(() => {
+        setCurrentUser(body);
+        alert("Profile successfully edited");
+      })
+      .catch(() => alert("Impossible de charger l'utilisateur courant"));
+    navigation.navigate("Profile Overview");
+  }
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Edit your Profile</Text>
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity>
+          <Avatar
+            size={200}
+            rounded
+            icon={{ name: "adb", type: "material" }}
+            containerStyle={{ backgroundColor: "orange" }}
+          >
+            <Avatar.Accessory size={30} />
+          </Avatar>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.inputContainer}>
+        <Input
+          style={styles.input}
+          placeholder="First Name"
+          onChangeText={setEditFirstName}
+          value={editFirstName}
+        />
+        <Input
+          style={styles.input}
+          placeholder="Last Name"
+          onChangeText={setEditLastName}
+          value={editLastName}
+        />
+        <Input
+          style={styles.input}
+          placeholder="Adress"
+          onChangeText={setEditAdress}
+          value={editAdress}
+        />
+        <Input
+          style={styles.input}
+          placeholder="Position"
+          onChangeText={setEditPosition}
+          value={editPosition}
+        />
+      </View>
+      <Button
+        title="Edit Profile"
+        type="solid"
+        icon={{ type: "font-awesome-5", name: "user-edit", color: "white" }}
+        onPress={onPressEditProfile}
+      ></Button>
     </View>
   );
 }
@@ -100,7 +179,6 @@ function EditProfile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     padding: 30,
   },
   headerContainer: {
@@ -128,6 +206,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     padding: 5,
     backgroundColor: "#FFFAFA",
+    opacity: 0.8,
     borderRadius: 10,
     marginBottom: 10,
   },
@@ -135,4 +214,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   infoIcon: { paddingRight: 20, paddingLeft: 10 },
+
+  inputContainer: {
+    flex: 5,
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  input: {
+    flex: 1,
+    textAlign: "center",
+    borderRadius: 10,
+    marginTop: 10,
+  },
 });
