@@ -3,9 +3,9 @@ import { Picker } from "@react-native-picker/picker";
 import services from "../services";
 import { AuthContext } from "../AuthProvider";
 
-export default function ProjectPicker() {
+export default function ProjectPicker({ projectsList, setprojectsList }) {
   // RECUPERATION DE LA LISTE DE PROJET
-  const [projectsList, setprojectsList] = useState([]);
+
   const [projectSelect, setProjectSelect] = useState("");
   const { token, currentUser } = useContext(AuthContext);
 
