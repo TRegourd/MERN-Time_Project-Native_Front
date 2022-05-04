@@ -1,15 +1,14 @@
 // #region IMPORT
 import dayjs from "dayjs";
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet, View, Text, ToastAndroid, ScrollView } from "react-native";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Button, Input } from "@rneui/base";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AuthContext } from "../AuthProvider";
 import services from "../services";
-import ProjectPicker from "./ProjectPicker";
+import ProjectPicker from "../components/ProjectPicker";
+import { DatePicker } from "../components/DatePicker";
 // #endregion IMPORT
 
 const TimeSheetStack = createNativeStackNavigator();
@@ -33,30 +32,12 @@ export default function Timesheets() {
 // #region RegisterTimesheetScreen
 function RegisterTimesheet({ navigation }) {
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
-
   const [description, setDescription] = useState();
   const [duration, setDuration] = useState(0);
+  const [projectsList, setprojectsList] = useState([]);
 
   // RECUPERATION DES DONNEES DE CONTEXT
   const { token, currentUser } = useContext(AuthContext);
-
-  // DATE PICKER
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
-  };
-
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
 
   // ENREGISTREMENT DU TEMPS SAISIE
   function saveTime(e) {
@@ -85,33 +66,7 @@ function RegisterTimesheet({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <View
-        // style={{
-        //   height: 60,
-        //   flexDirection: "row",
-        //   alignItems: "center",
-        //   justifyContent: "center",
-        //   padding: 10,
-        // }}
-        >
-          {show && (
-            <DateTimePicker
-              testID="datePicker"
-              value={date}
-              mode={mode}
-              display="calendar"
-              onChange={onChange}
-            />
-          )}
-          {!show && (
-            <Button
-              onPress={showDatepicker}
-              title={dayjs(date).format("DD-MM-YY")}
-              type="outline"
-            />
-          )}
-        </View>
-
+        <DatePicker date={date} setDate={setDate} />
         <View
           style={{
             height: 60,
@@ -157,7 +112,10 @@ function RegisterTimesheet({ navigation }) {
         </View>
 
         {/* affiche la liste des projets */}
-        <ProjectPicker />
+        <ProjectPicker
+          projectsList={projectsList}
+          setprojectsList={setprojectsList}
+        />
       </View>
       <View style={styles.buttonContainer}>
         {description && duration ? (
