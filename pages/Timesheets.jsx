@@ -1,3 +1,5 @@
+// #region IMPORT
+import dayjs from "dayjs";
 import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, View, Text, ToastAndroid, ScrollView } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -7,6 +9,7 @@ import { Picker } from "@react-native-picker/picker";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AuthContext } from "../AuthProvider";
 import services from "../services";
+// #endregion IMPORT
 
 const TimeSheetStack = createNativeStackNavigator();
 export default function Timesheets() {
@@ -17,11 +20,16 @@ export default function Timesheets() {
         component={RegisterTimesheet}
         options={{ headerShown: false }}
       />
-      <TimeSheetStack.Screen name="ListTimesheet" component={ListTimesheet} />
+      <TimeSheetStack.Screen
+        name="ListTimesheet"
+        component={ListTimesheet}
+        options={{ title: "Your timesheet" }}
+      />
     </TimeSheetStack.Navigator>
   );
 }
 
+// #region RegisterTimesheetScreen
 function RegisterTimesheet({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
@@ -48,9 +56,9 @@ function RegisterTimesheet({ navigation }) {
     showMode("date");
   };
 
-  // PROJECT
+  // RECUPERATION DE LA LISTE DE PROJET
   const [projectsList, setprojectsList] = useState([]);
-  const { token } = useContext(AuthContext);
+  const { token, currentUser } = useContext(AuthContext);
 
   function fetchAndSetProjects() {
     services
@@ -65,6 +73,7 @@ function RegisterTimesheet({ navigation }) {
     fetchAndSetProjects();
   }, []);
 
+  // ENREGISTREMENT DU TEMPS SAISIE
   function saveTime(e) {
     e.preventDefault();
     const time = {
@@ -73,7 +82,7 @@ function RegisterTimesheet({ navigation }) {
       project: projectSelect,
       duration: duration,
 
-      user: "6270e1595cbc7e2cdac39429",
+      user: currentUser._id,
     };
     services
       .createNewTimesheet(token, time)
@@ -83,6 +92,7 @@ function RegisterTimesheet({ navigation }) {
         setDate(dateReinitialised);
         setDescription("");
         setDuration(0);
+        navigation.navigate("ListTimesheet");
       })
       .catch((err) => alert("Erreur : ", err, "Try again"));
   }
@@ -90,36 +100,74 @@ function RegisterTimesheet({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <Text style={{ textAlign: "center", margin: 20 }}>Record time</Text>
-        {show && (
-          <DateTimePicker
-            testID="datePicker"
-            value={date}
-            mode={mode}
-            is24Hour={true}
-            onChange={onChange}
+        <View
+          style={{
+            height: 60,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {show && (
+            <DateTimePicker
+              testID="datePicker"
+              value={date}
+              mode={mode}
+              is24Hour={true}
+              onChange={onChange}
+            />
+          )}
+          <Button
+            onPress={showDatepicker}
+            title={dayjs(date).format("DD-MM-YY")}
+            type="outline"
           />
-        )}
-        <Text style={{ textAlign: "center" }}>
-          {("0" + date.getDate()).slice(-2) +
-            "/" +
-            ("0" + (date.getMonth() + 1)).slice(-2) +
-            "/" +
-            date.getFullYear()}
-        </Text>
-        <Button onPress={showDatepicker} title="Date" type="outline" />
-        <Text style={{ marginTop: 15 }}>Description</Text>
-        <Input
-          style={styles.input}
-          onChangeText={setDescription}
-          value={description}
-        />
-        <Text>Duration (min)</Text>
-        <Input
-          style={styles.input}
-          onChangeText={setDuration}
-          value={duration ? String(duration) : String()}
-        />
+        </View>
+
+        <View
+          style={{
+            height: 60,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "stretch",
+            alignContent: "space-around",
+          }}
+        >
+          <View style={{ flex: 4, justifyContent: "center" }}>
+            <Input
+              style={styles.inputTemps}
+              onChangeText={setDuration}
+              value={duration ? String(duration) : String()}
+              placeholder="0"
+            />
+          </View>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text>min</Text>
+          </View>
+        </View>
+        <View
+          style={{
+            height: 60,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "stretch",
+            alignContent: "space-around",
+          }}
+        >
+          <Input
+            style={styles.inputDesc}
+            onChangeText={setDescription}
+            value={description}
+            placeholder="Description"
+          />
+        </View>
+
         <Picker
           selectedValue={projectSelect}
           mode={"dialog"}
@@ -162,14 +210,18 @@ function RegisterTimesheet({ navigation }) {
     </View>
   );
 }
+// #endregion
 
+// #region ListTimesheetScreen
 function ListTimesheet({ navigation }) {
   const [listTimeSheet, setListTimeSheet] = useState([
     { project: { color: {} }, user: {} },
   ]);
 
-  const { token } = useContext(AuthContext);
+  // RECUPERATION DES ELEMENTS DE CONTEXT
+  const { token, currentUser } = useContext(AuthContext);
 
+  // RECUPERATION DES TEMPS
   async function fetchAndSetTimesheet() {
     await services
       .getAllTimesheetList(token)
@@ -183,22 +235,78 @@ function ListTimesheet({ navigation }) {
     fetchAndSetTimesheet();
   }, []);
 
+  // SUPPRESSION DU TEMPS
+  function handleDeleteTime(time) {
+    services
+      .deleteTimesheetById(token, time._id)
+      .then(() => {
+        fetchAndSetTimesheet();
+        alert("Time Deleted");
+      })
+      .catch((e) => console.log("Erreur delete project : ", e));
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Timesheet</Text>
-
-      <ScrollView>
-        {listTimeSheet.map((timesheet) => {
+      <ScrollView style={styles.scrollViewContainer}>
+        {listTimeSheet.map((time) => {
           return (
-            <View
-              style={{
-                height: 20,
-                width: 20,
-                margin: 5,
-                borderRadius: 10,
-              }}
-            >
-              <Text>{timesheet.desc}</Text>
+            <View style={styles.timesheetContainer}>
+              <View key={time._id} style={{ flex: 1, flexDirection: "row" }}>
+                <View style={{ flex: 9 }}>
+                  {/* Haut du cadre */}
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontWeight: "bold" }}>
+                        {dayjs(time.date).format("DD-MM-YY")}
+                      </Text>
+                    </View>
+                    <View style={{ flex: 3 }}>
+                      <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+                        {time.project.name}
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ textAlign: "right", fontWeight: "bold" }}>
+                        {(time.duration - (time.duration % 60)) / 60} h{" "}
+                        {time.duration % 60} min
+                      </Text>
+                    </View>
+                  </View>
+                  {/* bas du cadre */}
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ textAlign: "center" }}>{time.desc}</Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flex: 2,
+                    margin: 0,
+                    alignSelf: "auto",
+                  }}
+                >
+                  <Button
+                    type="Clear"
+                    onPress={() => handleDeleteTime(time)}
+                    icon={{
+                      type: "materialIcons",
+                      name: "delete-forever",
+                      color: "grey",
+                    }}
+                  ></Button>
+                </View>
+              </View>
             </View>
           );
         })}
@@ -207,9 +315,14 @@ function ListTimesheet({ navigation }) {
   );
 }
 
+// #endregion
+
+// #region styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignSelf: "stretch",
+    justifyContent: "flex-start",
     padding: 10,
   },
   button: {
@@ -219,7 +332,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
-  input: {
+  inputTemps: {
+    padding: 2,
+    textAlign: "right",
+  },
+  inputDesc: {
     padding: 2,
     textAlign: "center",
   },
@@ -229,4 +346,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
   },
+
+  timesheetContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    borderColor: "grey",
+    borderWidth: 0.5,
+    borderRadius: 10,
+    marginBottom: 2,
+  },
+  scrollViewContainer: {
+    flex: 4,
+  },
 });
+
+// #endregion

@@ -28,7 +28,6 @@ const services = {
       .then((res) => res.data);
   },
 
-
   createProject({ body, token }) {
     console.log(body);
     return base.post(`/projects/`, body, {
@@ -62,6 +61,13 @@ const services = {
       .then((res) => res.data);
   },
 
+  deleteTimesheetById(token, id) {
+    return base
+      .delete(`/timesheet/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => res.data);
+  },
 };
 
 export default services;
