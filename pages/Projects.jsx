@@ -5,8 +5,8 @@ import { AuthContext } from "../AuthProvider";
 import services from "../services";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useIsFocused } from "@react-navigation/native";
-
 import { ColorPicker } from "react-native-color-picker";
+import hexToRgb from "../lib/hexToRgb";
 
 const ProjectStack = createNativeStackNavigator();
 
@@ -22,6 +22,10 @@ export default function Projects() {
         name="Add Project"
         component={ProjectsAdd}
       ></ProjectStack.Screen>
+      <ProjectStack.Screen
+        name="Edit Project"
+        component={ProjectsEdit}
+      ></ProjectStack.Screen>
     </ProjectStack.Navigator>
   );
 }
@@ -30,8 +34,6 @@ function ProjectsDisplay({ navigation }) {
   const [projectsList, setprojectsList] = useState([]);
   const { token, currentUser } = useContext(AuthContext);
   const isFocused = useIsFocused();
-  const [nameProject, setNameProject] = useState();
-  const [isNameChange, setIsNameChange] = useState(false);
 
   function fetchAndSetProjects() {
     services
@@ -51,20 +53,6 @@ function ProjectsDisplay({ navigation }) {
       })
       .catch((e) => console.log(e));
   }
-
-  function onPressEditName(project) {
-    services
-      .updateProjectName(project._id, nameProject)
-      .then(() => {
-        fetchAndSetProjects();
-      })
-      .catch(() => alert("Impossible de charger la liste des projets"));
-    setIsNameChange(false);
-  }
-
-  // useEffect(() => {
-  //   console.log(nameProject);
-  // }, [nameProject]);
 
   useEffect(() => {
     fetchAndSetProjects();
@@ -96,29 +84,31 @@ function ProjectsDisplay({ navigation }) {
                       ")",
                   }}
                 ></View>
-                <TextInput
+                <Text
                   style={styles.project}
                   defaultValue={project.name}
                   placeholder={project.name}
-                  onChangeText={(text) => {
-                    setNameProject(text);
-                    setIsNameChange(true);
+                >
+                  {project.name}
+                </Text>
+                <Button
+                  type="Clear"
+                  onPress={() =>
+                    navigation.navigate("Edit Project", {
+                      projectId: project._id,
+                      projectName: project.name,
+                      projectColorR: project.color.r,
+                      projectColorG: project.color.g,
+                      projectColorB: project.color.b,
+                    })
+                  }
+                  icon={{
+                    type: "materialIcons",
+                    name: "edit",
+                    color: "grey",
                   }}
-                ></TextInput>
-                {isNameChange && (
-                  <Button
-                    type="Clear"
-                    onPress={() => {
-                      onPressEditName(project);
-                    }}
-                    icon={{
-                      type: "materialIcons",
-                      name: "edit",
-                      color: "grey",
-                    }}
-                    style={styles.editAndDeleteButton}
-                  ></Button>
-                )}
+                  style={styles.editAndDeleteButton}
+                ></Button>
                 <Button
                   type="Clear"
                   onPress={() => {
@@ -172,17 +162,6 @@ function ProjectsAdd({ navigation }) {
     navigation.navigate("My Projects");
   };
 
-  function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-      ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
-      : null;
-  }
-
   return (
     <View style={styles.container}>
       <Input
@@ -206,11 +185,54 @@ function ProjectsAdd({ navigation }) {
   );
 }
 
+function ProjectsEdit({ navigation, route }) {
+  const [projectName, setProjectName] = useState(route.params.projectName);
+  const [selectedColor, setSelectedColor] = useState();
+
+  const onPressEditProject = () => {
+    if (selectedColor) {
+      services
+        .updateProjectColor(route.params.projectId, hexToRgb(selectedColor))
+        .then(() => {})
+        .catch(() => alert("Impossible de charger la liste des projets"));
+    }
+    services
+      .updateProjectName(route.params.projectId, projectName)
+      .then(() => {
+        alert("Project successfully edited");
+      })
+      .catch(() => alert("Impossible de charger la liste des projets"));
+    navigation.navigate("My Projects");
+  };
+
+  return (
+    <View style={styles.container}>
+      <Input
+        style={styles.input}
+        placeholder={projectName}
+        onChangeText={setProjectName}
+        value={projectName}
+      />
+      <ColorPicker
+        onColorSelected={(color) => setSelectedColor(color)}
+        style={styles.colorPicker}
+      />
+      <Button
+        title="Edit Project"
+        type="solid"
+        icon={{ type: "materialIcons", name: "edit", color: "white" }}
+        onPress={onPressEditProject}
+        style={styles.button}
+      ></Button>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    padding: 50,
+    padding: 30,
   },
   title: {
     flex: 1,
@@ -236,10 +258,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 5,
-    borderColor: "grey",
-    borderWidth: 0.5,
+    backgroundColor: "#FFFAFA",
     borderRadius: 10,
-    marginBottom: 2,
+    marginBottom: 10,
   },
   project: {
     flex: 3,
