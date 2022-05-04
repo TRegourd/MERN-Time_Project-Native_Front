@@ -251,8 +251,8 @@ function ListTimesheet({ navigation }) {
       <ScrollView style={styles.scrollViewContainer}>
         {listTimeSheet.map((time) => {
           return (
-            <View style={styles.timesheetContainer}>
-              <View key={time._id} style={{ flex: 1, flexDirection: "row" }}>
+            <View key={time._id} style={styles.timesheetContainer}>
+              <View style={{ flex: 1, flexDirection: "row" }}>
                 <View style={{ flex: 9 }}>
                   {/* Haut du cadre */}
                   <View
