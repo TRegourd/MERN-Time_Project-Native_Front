@@ -43,16 +43,18 @@ function ViewProfile({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("Edit")}>
-          <Avatar
-            size={150}
-            rounded
-            icon={{ name: "adb", type: "material" }}
-            containerStyle={{ backgroundColor: "orange" }}
-          >
-            <Avatar.Accessory size={60} />
-          </Avatar>
-        </TouchableOpacity>
+        <Avatar
+          size={150}
+          rounded
+          icon={{ name: "adb", type: "material" }}
+          containerStyle={{ backgroundColor: "orange" }}
+        >
+          <Avatar.Accessory
+            size={60}
+            onPress={() => navigation.navigate("Edit")}
+          />
+        </Avatar>
+
         <Text style={styles.title}>
           {currentUser.first_name} {currentUser.last_name}
         </Text>
@@ -130,16 +132,20 @@ function EditProfile({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity>
-          <Avatar
-            size={150}
-            rounded
-            icon={{ name: "adb", type: "material" }}
-            containerStyle={{ backgroundColor: "orange" }}
-          >
-            <Avatar.Accessory size={30} />
-          </Avatar>
-        </TouchableOpacity>
+        <Avatar
+          size={150}
+          rounded
+          icon={{ name: "adb", type: "material" }}
+          containerStyle={{ backgroundColor: "orange" }}
+        >
+          <Avatar.Accessory
+            type={"font-awesome-5"}
+            name={"camera"}
+            style={{ height: 40, width: 40, borderRadius: 20 }}
+            size={30}
+            onPress={() => {}}
+          />
+        </Avatar>
       </View>
       <View style={styles.inputContainer}>
         <ScrollView>
