@@ -5,7 +5,6 @@ import { AuthContext } from "../AuthProvider";
 import services from "../services";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useIsFocused } from "@react-navigation/native";
-
 import { ColorPicker } from "react-native-color-picker";
 import hexToRgb from "../lib/hexToRgb";
 
@@ -233,7 +232,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    padding: 50,
+    padding: 30,
   },
   title: {
     flex: 1,
@@ -259,10 +258,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 5,
-    borderColor: "grey",
-    borderWidth: 0.5,
+    backgroundColor: "#FFFAFA",
     borderRadius: 10,
-    marginBottom: 2,
+    marginBottom: 10,
   },
   project: {
     flex: 3,
