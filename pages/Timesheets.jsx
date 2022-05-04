@@ -71,7 +71,7 @@ function RegisterTimesheet({ navigation }) {
 
   useEffect(() => {
     fetchAndSetProjects();
-  }, []);
+  }, [projectsList]);
 
   // ENREGISTREMENT DU TEMPS SAISIE
   function saveTime(e) {
@@ -101,13 +101,13 @@ function RegisterTimesheet({ navigation }) {
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <View
-          style={{
-            height: 60,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 10,
-          }}
+        // style={{
+        //   height: 60,
+        //   flexDirection: "row",
+        //   alignItems: "center",
+        //   justifyContent: "center",
+        //   padding: 10,
+        // }}
         >
           {show && (
             <DateTimePicker
