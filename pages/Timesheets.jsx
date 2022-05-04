@@ -101,12 +101,14 @@ function RegisterTimesheet({ navigation }) {
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <View
-          style={{
-            height: 60,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          style={
+            {
+              // height: 60,
+              // flexDirection: "row",
+              // alignItems: "center",
+              // justifyContent: "center",
+            }
+          }
         >
           {show && (
             <DateTimePicker
@@ -215,7 +217,7 @@ function RegisterTimesheet({ navigation }) {
 // #region ListTimesheetScreen
 function ListTimesheet({ navigation }) {
   const [listTimeSheet, setListTimeSheet] = useState([
-    { project: { color: {} }, user: {} },
+    { project: { color: {} }, user: {}, _id: 0 },
   ]);
 
   // RECUPERATION DES ELEMENTS DE CONTEXT

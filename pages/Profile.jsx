@@ -1,6 +1,7 @@
 import { Avatar, Button, Input } from "@rneui/base";
 import React, { useContext, useEffect, useState } from "react";
 import {
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -44,7 +45,7 @@ function ViewProfile({ navigation }) {
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.navigate("Edit")}>
           <Avatar
-            size={200}
+            size={150}
             rounded
             icon={{ name: "adb", type: "material" }}
             containerStyle={{ backgroundColor: "orange" }}
@@ -131,7 +132,7 @@ function EditProfile({ navigation }) {
       <View style={styles.headerContainer}>
         <TouchableOpacity>
           <Avatar
-            size={200}
+            size={150}
             rounded
             icon={{ name: "adb", type: "material" }}
             containerStyle={{ backgroundColor: "orange" }}
@@ -141,36 +142,39 @@ function EditProfile({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.inputContainer}>
-        <Input
-          style={styles.input}
-          placeholder="First Name"
-          onChangeText={setEditFirstName}
-          value={editFirstName}
-        />
-        <Input
-          style={styles.input}
-          placeholder="Last Name"
-          onChangeText={setEditLastName}
-          value={editLastName}
-        />
-        <Input
-          style={styles.input}
-          placeholder="Adress"
-          onChangeText={setEditAdress}
-          value={editAdress}
-        />
-        <Input
-          style={styles.input}
-          placeholder="Position"
-          onChangeText={setEditPosition}
-          value={editPosition}
-        />
+        <ScrollView>
+          <Input
+            style={styles.input}
+            placeholder="First Name"
+            onChangeText={setEditFirstName}
+            value={editFirstName}
+          />
+          <Input
+            style={styles.input}
+            placeholder="Last Name"
+            onChangeText={setEditLastName}
+            value={editLastName}
+          />
+          <Input
+            style={styles.input}
+            placeholder="Adress"
+            onChangeText={setEditAdress}
+            value={editAdress}
+          />
+          <Input
+            style={styles.input}
+            placeholder="Position"
+            onChangeText={setEditPosition}
+            value={editPosition}
+          />
+        </ScrollView>
       </View>
       <Button
         title="Edit Profile"
         type="solid"
         icon={{ type: "font-awesome-5", name: "user-edit", color: "white" }}
         onPress={onPressEditProfile}
+        style={styles.button}
       ></Button>
     </View>
   );
@@ -182,7 +186,7 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   headerContainer: {
-    flex: 4,
+    flex: 3,
     flexDirection: "column",
     justifyContent: "space-around",
     alignItems: "center",
@@ -200,10 +204,10 @@ const styles = StyleSheet.create({
     flex: 0.5,
   },
   infoContainer: {
-    flex: 1,
+    flex: 3,
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "flex-start",
+    alignItems: "center",
     padding: 5,
     backgroundColor: "#FFFAFA",
     opacity: 0.8,
@@ -218,7 +222,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flex: 5,
     flexDirection: "column",
-    alignItems: "center",
   },
   input: {
     flex: 1,
