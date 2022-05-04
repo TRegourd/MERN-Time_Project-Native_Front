@@ -333,13 +333,13 @@ const styles = StyleSheet.create({
 
   timesheetContainer: {
     flex: 1,
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     padding: 5,
-    borderColor: "grey",
-    borderWidth: 0.5,
+    backgroundColor: "#FFFAFA",
     borderRadius: 10,
-    marginBottom: 2,
+    marginBottom: 10,
   },
   scrollViewContainer: {
     flex: 4,
