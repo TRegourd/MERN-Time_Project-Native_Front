@@ -34,7 +34,8 @@ function RegisterTimesheet({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [description, setDescription] = useState();
   const [duration, setDuration] = useState(0);
-  const [projectsList, setprojectsList] = useState([]);
+
+  const [projectSelect, setProjectSelect] = useState("");
 
   // RECUPERATION DES DONNEES DE CONTEXT
   const { token, currentUser } = useContext(AuthContext);
@@ -113,8 +114,8 @@ function RegisterTimesheet({ navigation }) {
 
         {/* affiche la liste des projets */}
         <ProjectPicker
-          projectsList={projectsList}
-          setprojectsList={setprojectsList}
+          projectSelect={projectSelect}
+          setProjectSelect={setProjectSelect}
         />
       </View>
       <View style={styles.buttonContainer}>
