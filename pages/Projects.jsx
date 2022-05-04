@@ -35,8 +35,8 @@ function ProjectsDisplay({ navigation }) {
   const { token, currentUser } = useContext(AuthContext);
   const isFocused = useIsFocused();
 
-  function fetchAndSetProjects() {
-    services
+  async function fetchAndSetProjects() {
+    await services
       .getProjectsList(token)
       .then((res) => {
         setprojectsList(res);

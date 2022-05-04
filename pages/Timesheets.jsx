@@ -119,11 +119,13 @@ function RegisterTimesheet({ navigation }) {
               onChange={onChange}
             />
           )}
-          <Button
-            onPress={showDatepicker}
-            title={dayjs(date).format("DD-MM-YY")}
-            type="outline"
-          />
+          {!show && (
+            <Button
+              onPress={showDatepicker}
+              title={dayjs(date).format("DD-MM-YY")}
+              type="outline"
+            />
+          )}
         </View>
 
         <View

@@ -36,10 +36,10 @@ function LoginInput({ navigation }) {
     services
       .login(body)
       .then((result) => {
+        console.log(result.data);
         const { jwt } = result.data;
         tokenAsyncStorage.storeJwt(jwt);
         setLogged(true);
-        tokenAsyncStorage.getJwt();
         alert("Successfully logged");
       })
       .catch((err) => {
