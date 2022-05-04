@@ -25,7 +25,6 @@ export default function AuthProvider({ children }) {
   }, [logged]);
 
   const getCurrentUser = (token) => {
-    console.log("token", token);
     return base
       .get(`/users`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => setCurrentUser(res.data));
