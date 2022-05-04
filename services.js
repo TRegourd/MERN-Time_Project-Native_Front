@@ -79,12 +79,6 @@ const services = {
 
   /** Users */
 
-  // getCurrentUser(token) {
-  //   return base
-  //     .get(`/users`, { headers: { Authorization: `Bearer ${token}` } })
-  //     .then((res) => res.data);
-  // },
-
   updateCurrentUser(body, token) {
     return base
       .put(`/users`, body, { headers: { Authorization: `Bearer ${token}` } })
