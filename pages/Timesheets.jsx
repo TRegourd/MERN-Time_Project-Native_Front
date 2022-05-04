@@ -71,7 +71,7 @@ function RegisterTimesheet({ navigation }) {
 
   useEffect(() => {
     fetchAndSetProjects();
-  }, []);
+  }, [projectsList]);
 
   // ENREGISTREMENT DU TEMPS SAISIE
   function saveTime(e) {
